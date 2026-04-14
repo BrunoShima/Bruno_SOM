@@ -1,0 +1,213 @@
+// 3D vertical carousel view
+// Albums arranged in a cylinder rotating on the X axis
+
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+
+function CarouselView({ albums }) {
+    const navigate = useNavigate();
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [rotation, setRotation] = useState(0);
+    const [isSpinning, setIsSpinning] = useState(false);
+    const rotationRef = useRef(0);
+
+    const minSlots = 10;
+    const repeated = albums.length < minSlots
+        ? Array.from({ length: minSlots }, (_, i) => albums[i % albums.length])
+        : albums;
+
+    const count = repeated.length;
+    const angleStep = 360 / count;
+    const radius = 550;
+
+    useEffect(() => {
+        rotationRef.current = rotation;
+    }, [rotation]);
+
+    const spin = useCallback((direction) => {
+        setIsSpinning(true);
+        if (direction === "prev") {
+            setRotation((r) => r + angleStep);
+            setActiveIndex((i) => (i - 1 + count) % count);
+        } else {
+            setRotation((r) => r - angleStep);
+            setActiveIndex((i) => (i + 1) % count);
+        }
+        setTimeout(() => setIsSpinning(false), 700);
+    }, [count, angleStep]);
+
+    const prev = useCallback(() => spin("prev"), [spin]);
+    const next = useCallback(() => spin("next"), [spin]);
+
+    // Keyboard navigation
+    useEffect(() => {
+        const handleKey = (e) => {
+            if (e.key === "ArrowUp" || e.key === "ArrowLeft") prev();
+            if (e.key === "ArrowDown" || e.key === "ArrowRight") next();
+        };
+        window.addEventListener("keydown", handleKey);
+        return () => window.removeEventListener("keydown", handleKey);
+    }, [prev, next]);
+
+    // Scroll wheel navigation
+    useEffect(() => {
+        let timeout;
+        const handleWheel = (e) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                if (e.deltaY > 0) next();
+                else prev();
+            }, 50);
+        };
+        window.addEventListener("wheel", handleWheel, { passive: true });
+        return () => window.removeEventListener("wheel", handleWheel);
+    }, [prev, next]);
+
+    const handleAlbumClick = () => {
+        const nearestIndex = Math.round(rotationRef.current / angleStep);
+        const currentIndex = ((nearestIndex % count) + count) % count;
+        navigate(`/albums/${repeated[currentIndex].id}`);
+    };
+
+    if (!albums.length) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full text-text-muted">
+                <p className="text-sm uppercase tracking-widest">No albums yet</p>
+                <p className="text-xs mt-2">Add your first album to get started</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="relative w-full h-full select-none flex items-center justify-center">
+
+            {/* Glow */}
+            <div
+                style={{
+                    position: "absolute",
+                    width: "900px",
+                    height: "900px",
+                    pointerEvents: "none",
+                    background: "radial-gradient(circle, rgba(118, 185, 0, 0.6) 0%, rgba(118, 185, 0, 0.2) 40%, transparent 70%)",
+                    mixBlendMode: "screen",
+                    opacity: isSpinning ? 0 : 1,
+                    transition: "opacity 0.9s ease",
+                    borderRadius: "50%",
+                }}
+            />
+
+            {/* 3D carousel container */}
+            <div
+                style={{
+                    width: "280px",
+                    height: "280px",
+                    perspective: "1200px",
+                    position: "relative",
+                    marginTop: "30px",
+                }}
+            >
+                {/* Spinning cylinder */}
+                <div
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                        position: "relative",
+                        transformStyle: "preserve-3d",
+                        transition: "transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                        transform: `rotateX(${rotation}deg)`,
+                    }}
+                >
+                    {repeated.map((album, i) => {
+                        const angle = i * angleStep;
+                        const isActive = i === activeIndex;
+
+                        return (
+                            <div
+                                key={`${album.id}-${i}`}
+                                style={{
+                                    position: "absolute",
+                                    width: "280px",
+                                    height: "280px",
+                                    transformStyle: "preserve-3d",
+                                    transform: `rotateX(-${angle}deg) translateZ(${radius}px)`,
+                                    pointerEvents: "none",
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        position: "absolute",
+                                        inset: 0,
+                                        overflow: "hidden",
+                                        transform: isActive ? "scale(1.08)" : "scale(1)",
+                                        transition: "all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                                        boxShadow: "0 20px 40px rgba(0,0,0,0.6)",
+                                    }}
+                                >
+                                    {album.image_url || album.image_filename ? (
+                                        <img
+                                            src={album.image_url || `http://localhost:3000/images/${album.image_filename}`}
+                                            alt={album.title}
+                                            style={{
+                                                width: "100%",
+                                                height: "100%",
+                                                objectFit: "cover",
+                                                pointerEvents: "none",
+                                                willChange: "transform",
+                                                imageRendering: "auto",
+                                            }}
+                                        />
+                                    ) : (
+                                        <div
+                                            style={{
+                                                width: "100%",
+                                                height: "100%",
+                                                background: "#111",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                fontSize: "4rem",
+                                            }}
+                                        >
+                                            ♪
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* Click overlay */}
+                <div
+                    style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        width: "550px",
+                        height: "550px",
+                        zIndex: 10,
+                        cursor: "pointer",
+                    }}
+                    onClick={handleAlbumClick}
+                />
+            </div>
+
+            {/* Nav arrows */}
+            <button
+                onClick={prev}
+                className="absolute right-8 top-1/2 -translate-y-8 text-text-muted hover:text-accent transition-colors text-2xl"
+            >
+                ↑
+            </button>
+            <button
+                onClick={next}
+                className="absolute right-8 top-1/2 translate-y-2 text-text-muted hover:text-accent transition-colors text-2xl"
+            >
+                ↓
+            </button>
+        </div>
+    );
+}
+
+export default CarouselView;
