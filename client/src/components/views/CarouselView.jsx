@@ -18,7 +18,8 @@ function CarouselView({ albums }) {
 
     const count = repeated.length;
     const angleStep = 360 / count;
-    const radius = 550;
+    const radius = count <= 10 ? 550 : Math.max(550, count * 58);
+    const perspective = radius * 2.2;
 
     useEffect(() => {
         rotationRef.current = rotation;
@@ -36,10 +37,26 @@ function CarouselView({ albums }) {
         setTimeout(() => setIsSpinning(false), 700);
     }, [count, angleStep]);
 
+    // Reset carousel position when album count changes
+    useEffect(() => {
+        if (albums.length === 0) return;
+        const newIndex = (albums.length - 1) % count;
+        const newRotation = newIndex * angleStep;
+
+        setActiveIndex(0);
+        setRotation(0);
+        rotationRef.current = 0;
+
+        requestAnimationFrame(() => {
+            setActiveIndex(newIndex);
+            setRotation(newRotation);
+            rotationRef.current = newRotation;
+        });
+    }, [albums.length]);
+
     const prev = useCallback(() => spin("prev"), [spin]);
     const next = useCallback(() => spin("next"), [spin]);
 
-    // Keyboard navigation
     useEffect(() => {
         const handleKey = (e) => {
             if (e.key === "ArrowUp" || e.key === "ArrowLeft") prev();
@@ -49,7 +66,6 @@ function CarouselView({ albums }) {
         return () => window.removeEventListener("keydown", handleKey);
     }, [prev, next]);
 
-    // Scroll wheel navigation
     useEffect(() => {
         let timeout;
         const handleWheel = (e) => {
@@ -101,7 +117,7 @@ function CarouselView({ albums }) {
                 style={{
                     width: "280px",
                     height: "280px",
-                    perspective: "1200px",
+                    perspective: `${perspective}px`,
                     position: "relative",
                     marginTop: "30px",
                 }}
@@ -152,8 +168,6 @@ function CarouselView({ albums }) {
                                                 height: "100%",
                                                 objectFit: "cover",
                                                 pointerEvents: "none",
-                                                willChange: "transform",
-                                                imageRendering: "auto",
                                             }}
                                         />
                                     ) : (
