@@ -5,6 +5,7 @@ import SignupPage from "./pages/SignupPage";
 import CollectionPage from "./pages/CollectionPage";
 import AlbumPage from "./pages/AlbumPage";
 import SpotifyCallbackPage from "./pages/SpotifyCallbackPage";
+import MiniPlayer from "./components/player/MiniPlayer";
 
 // Wraps any route that requires the user to be logged in
 function ProtectedRoute({ children }) {
@@ -43,6 +44,7 @@ function App() {
                 {/* Catch all */}
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+            <MiniPlayer/>
         </BrowserRouter>
     );
 }
