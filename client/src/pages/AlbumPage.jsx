@@ -1,7 +1,7 @@
 // Album detail page — art, info, tracklist, and playback
 
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useSpotify } from "../context/SpotifyContext";
 import logo from "../assets/logo-white.svg";
@@ -9,10 +9,12 @@ import Player from "../components/player/Player";
 
 function AlbumPage() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const { authFetch } = useAuth();
     const { spotifyToken, playAlbum, currentTrack, isPlayerReady, deviceId } = useSpotify();
 
     const [album, setAlbum] = useState(null);
+    const [albums, setAlbums] = useState([]);
     const [tracks, setTracks] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -35,6 +37,17 @@ function AlbumPage() {
                 }
             });
     }, [id, spotifyToken]);
+
+    // Fetch full collection for prev/next navigation
+    useEffect(() => {
+        authFetch("http://localhost:3000/albums")
+            .then((res) => res.json())
+            .then((data) => setAlbums(data));
+    }, []);
+
+    const currentIdx = albums.findIndex((a) => a.id === album?.id);
+    const prevAlbum = currentIdx > 0 ? albums[currentIdx - 1] : albums[albums.length - 1];
+    const nextAlbum = currentIdx < albums.length - 1 ? albums[currentIdx + 1] : albums[0];
 
     const handlePlayTrack = (track, index) => {
         if (spotifyToken && isPlayerReady) {
@@ -102,11 +115,29 @@ function AlbumPage() {
                 {/* Left — album art + info */}
                 <div className="w-1/2 flex flex-col overflow-hidden shrink-0">
 
-                    {/* Logo */}
+                    {/* Logo + nav */}
                     <div className="p-8 shrink-0">
                         <Link to="/">
                             <img src={logo} alt="SOM" className="h-7" />
                         </Link>
+
+                        {albums.length > 1 && (
+                            <div className="flex items-center gap-3 mt-4">
+                                <button
+                                    onClick={() => navigate(`/albums/${prevAlbum.id}`)}
+                                    className="text-text-muted hover:text-text-primary transition-colors text-xs uppercase tracking-widest"
+                                >
+                                    ← Prev
+                                </button>
+                                <span className="text-text-faint">·</span>
+                                <button
+                                    onClick={() => navigate(`/albums/${nextAlbum.id}`)}
+                                    className="text-text-muted hover:text-text-primary transition-colors text-xs uppercase tracking-widest"
+                                >
+                                    Next →
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     {/* Art + info centered */}
