@@ -1,17 +1,39 @@
 // Floating mini player — appears on all pages except album page when something is playing
 
+import { useState, useEffect } from "react";
 import { useSpotify } from "../../context/SpotifyContext";
-import { useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function MiniPlayer() {
     const { currentTrack, isPlaying, togglePlayback, player } = useSpotify();
+    const { authFetch } = useAuth();
     const location = useLocation();
+    const navigate = useNavigate();
+    const [matchedAlbum, setMatchedAlbum] = useState(null);
 
-    // Hide on album page — it has its own full player
+    // ALL hooks before any early returns
+    useEffect(() => {
+        if (!currentTrack) return;
+
+        const spotifyAlbumId = currentTrack.album?.uri?.split(":")?.[2];
+        if (!spotifyAlbumId) return;
+
+        authFetch("http://localhost:3000/albums")
+            .then((res) => res.json())
+            .then((albums) => {
+                const match = albums.find((a) => a.spotify_id === spotifyAlbumId);
+                setMatchedAlbum(match || null);
+            });
+    }, [currentTrack]);
+
+    // Early returns AFTER all hooks
     if (location.pathname.startsWith("/albums/")) return null;
-
-    // Hide if nothing is playing
     if (!currentTrack) return null;
+
+    const handleNavigate = () => {
+        if (matchedAlbum) navigate(`/albums/${matchedAlbum.id}`);
+    };
 
     const handlePrev = () => player?.previousTrack();
     const handleNext = () => player?.nextTrack();
@@ -35,7 +57,10 @@ function MiniPlayer() {
             <div className="flex items-center gap-3">
 
                 {/* Album art */}
-                <div className="w-10 h-10 shrink-0 overflow-hidden rounded">
+                <div
+                    className={`w-10 h-10 shrink-0 overflow-hidden rounded ${matchedAlbum ? "cursor-pointer" : ""}`}
+                    onClick={handleNavigate}
+                >
                     {currentTrack.album?.images?.[0]?.url ? (
                         <img
                             src={currentTrack.album.images[0].url}
@@ -48,8 +73,13 @@ function MiniPlayer() {
                 </div>
 
                 {/* Track info */}
-                <div className="flex-1 min-w-0">
-                    <p className="text-text-primary text-xs font-semibold truncate">{currentTrack.name}</p>
+                <div
+                    className={`flex-1 min-w-0 ${matchedAlbum ? "cursor-pointer" : ""}`}
+                    onClick={handleNavigate}
+                >
+                    <p className={`text-xs font-semibold truncate transition-colors ${matchedAlbum ? "hover:text-accent" : "text-text-primary"}`}>
+                        {currentTrack.name}
+                    </p>
                     <p className="text-text-muted text-xs truncate">{currentTrack.artists?.[0]?.name}</p>
                 </div>
 
