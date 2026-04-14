@@ -60,9 +60,11 @@ function CollectionPage() {
         <div className="h-screen bg-background overflow-hidden relative">
 
             {/* Logo — top left */}
-            <div className="absolute top-6 left-8 z-20">
-                <img src={logo} alt="SOM" className="h-7" />
-            </div>
+            <button onClick={() => setView("carousel")}>
+                <div className="absolute top-6 left-8 z-20">
+                    <img src={logo} alt="SOM" className="h-7" />
+                </div>
+            </button>
 
             {/* Controls — top right, vertical stack */}
             <div className="absolute top-6 right-8 z-20 flex flex-col items-center gap-3">
