@@ -19,7 +19,7 @@ function LoginPage() {
         setLoading(true);
 
         try {
-            const res = await fetch("http://localhost:3000/users/signin", {
+            const res = await fetch("https://som-server-zwz3.onrender.com/users/signin", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),

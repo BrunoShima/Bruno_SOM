@@ -25,7 +25,7 @@ function CollectionPage() {
     const viewRef = useRef(null);
 
     const getAlbums = () => {
-        authFetch("http://localhost:3000/albums")
+        authFetch("https://som-server-zwz3.onrender.com/albums")
             .then((res) => res.json())
             .then((data) => {
                 setAlbums(data);

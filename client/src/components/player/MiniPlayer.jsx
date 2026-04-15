@@ -19,7 +19,7 @@ function MiniPlayer() {
         const spotifyAlbumId = currentTrack.album?.uri?.split(":")?.[2];
         if (!spotifyAlbumId) return;
 
-        authFetch("http://localhost:3000/albums")
+        authFetch("https://som-server-zwz3.onrender.com/albums")
             .then((res) => res.json())
             .then((albums) => {
                 const match = albums.find((a) => a.spotify_id === spotifyAlbumId);

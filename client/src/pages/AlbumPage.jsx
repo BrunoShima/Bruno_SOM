@@ -21,7 +21,7 @@ function AlbumPage() {
     const [fullscreen, setFullscreen] = useState(null);
 
     useEffect(() => {
-        authFetch(`http://localhost:3000/albums/${id}`)
+        authFetch(`https://som-server-zwz3.onrender.com/albums/${id}`)
             .then((res) => res.json())
             .then((data) => {
                 setAlbum(data);
@@ -41,7 +41,7 @@ function AlbumPage() {
     }, [id, spotifyToken]);
 
     useEffect(() => {
-        authFetch("http://localhost:3000/albums")
+        authFetch("https://som-server-zwz3.onrender.com/albums")
             .then((res) => res.json())
             .then((data) => setAlbums(data));
     }, []);

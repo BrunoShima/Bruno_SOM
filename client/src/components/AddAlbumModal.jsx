@@ -28,7 +28,7 @@ function AddAlbumModal({ onAlbumAdded, onClose }) {
 
             try {
                 const res = await authFetch(
-                    `http://localhost:3000/spotify/search?q=${encodeURIComponent(query)}`,
+                    `https://som-server-zwz3.onrender.com/spotify/search?q=${encodeURIComponent(query)}`,
                     { headers: { spotify_token: spotifyToken } }
                 );
                 const data = await res.json();
@@ -60,7 +60,7 @@ function AddAlbumModal({ onAlbumAdded, onClose }) {
         setSaving(true);
 
         try {
-            const artistRes = await authFetch("http://localhost:3000/artists");
+            const artistRes = await authFetch("https://som-server-zwz3.onrender.com/artists");
             const artists = await artistRes.json();
             const existing = artists.find(
                 (a) => a.name.toLowerCase() === album.artist_name.toLowerCase()
@@ -70,7 +70,7 @@ function AddAlbumModal({ onAlbumAdded, onClose }) {
             if (existing) {
                 artistId = existing.id;
             } else {
-                const newArtistRes = await authFetch("http://localhost:3000/artists", {
+                const newArtistRes = await authFetch("https://som-server-zwz3.onrender.com/artists", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ name: album.artist_name }),
@@ -79,7 +79,7 @@ function AddAlbumModal({ onAlbumAdded, onClose }) {
                 artistId = newArtist.artistId;
             }
 
-            await authFetch("http://localhost:3000/albums", {
+            await authFetch("https://som-server-zwz3.onrender.com/albums", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
