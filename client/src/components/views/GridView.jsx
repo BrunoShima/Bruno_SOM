@@ -92,9 +92,9 @@ function GridView({ albums, onAlbumDeleted }) {
                                     onClick={() => navigate(`/albums/${album.id}`)}
                                     className="aspect-square bg-surface overflow-hidden mb-3 relative"
                                 >
-                                    {album.image_url || album.image_filename ? (
+                                    {album.image_url ? (
                                         <img
-                                            src={album.image_url || `http://localhost:3000/images/${album.image_filename}`}
+                                            src={album.image_url}
                                             alt={album.title}
                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                         />

@@ -2,12 +2,9 @@
 // Handles token storage, refresh, and player initialization
 
 import { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
-import { useAuth } from "./AuthContext";
-
 const SpotifyContext = createContext();
 
 export function SpotifyProvider({ children }) {
-    const { token } = useAuth();
     const [spotifyToken, setSpotifyToken] = useState(
         localStorage.getItem("spotify_access_token") || null
     );
@@ -16,7 +13,6 @@ export function SpotifyProvider({ children }) {
     );
     const [player, setPlayer] = useState(null);
     const [deviceId, setDeviceId] = useState(null);
-    const [isPremium, setIsPremium] = useState(false);
     const [isPlayerReady, setIsPlayerReady] = useState(false);
     const [currentTrack, setCurrentTrack] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -55,8 +51,6 @@ export function SpotifyProvider({ children }) {
 
                 // Update state without triggering SDK reinitialization
                 setSpotifyToken(data.access_token);
-
-                console.log("Spotify token refreshed successfully");
             }
         } catch (err) {
             console.error("Failed to refresh Spotify token:", err);
@@ -92,14 +86,6 @@ export function SpotifyProvider({ children }) {
 
         // Don't reinitialize if player already exists
         if (playerRef.current) return;
-
-        fetch("https://api.spotify.com/v1/me", {
-            headers: { Authorization: `Bearer ${spotifyToken}` },
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                setIsPremium(data.product === "premium");
-            });
 
         const initPlayer = () => {
             const spotifyPlayer = new window.Spotify.Player({
@@ -186,7 +172,6 @@ export function SpotifyProvider({ children }) {
                 setSpotifyRefreshToken,
                 player,
                 deviceId,
-                isPremium,
                 isPlayerReady,
                 currentTrack,
                 isPlaying,

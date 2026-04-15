@@ -191,9 +191,9 @@ function CarouselView({ albums }) {
                                         boxShadow: "0 20px 40px rgba(0,0,0,0.6)",
                                     }}
                                 >
-                                    {album.image_url || album.image_filename ? (
+                                    {album.image_url ? (
                                         <img
-                                            src={album.image_url || `http://localhost:3000/images/${album.image_filename}`}
+                                            src={album.image_url}
                                             alt={album.title}
                                             style={{
                                                 width: "100%",

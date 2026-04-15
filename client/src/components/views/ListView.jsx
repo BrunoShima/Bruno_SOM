@@ -110,9 +110,9 @@ function ListView({ albums, onAlbumDeleted }) {
                                     onClick={() => navigate(`/albums/${album.id}`)}
                                 >
                                     <div className="w-9 h-9 shrink-0 overflow-hidden">
-                                        {album.image_url || album.image_filename ? (
+                                        {album.image_url ? (
                                             <img
-                                                src={album.image_url || `http://localhost:3000/images/${album.image_filename}`}
+                                                src={album.image_url}
                                                 alt={album.title}
                                                 className="w-full h-full object-cover"
                                             />

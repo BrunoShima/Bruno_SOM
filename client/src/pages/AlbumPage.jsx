@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { useSpotify } from "../context/SpotifyContext";
 import logo from "../assets/logo-white.svg";
 import Player from "../components/player/Player";
-import FullscreenPlayer from "../components/player/FullScreenPlayer";
+import FullscreenPlayer from "../components/player/FullscreenPlayer";
 
 function AlbumPage() {
     const { id } = useParams();
