@@ -1,12 +1,12 @@
-// Creates and exports the MySQL database connection using mysql2
+// Creates and exports the MySQL database connection
 
 const mysql = require("mysql2");
 
 const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "bs_albums",
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     port: 3306,
 });
 
@@ -15,7 +15,7 @@ db.connect((err) => {
         console.error("Error connecting to the database:", err);
         return;
     }
-    console.log("Connected to the bs_albums database");
+    console.log(`Connected to database: ${process.env.DB_NAME}`);
 });
 
 module.exports = db;

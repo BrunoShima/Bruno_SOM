@@ -21,7 +21,7 @@ router.get("/", authMiddleware, (req, res) => {
     db.query(sql, [req.userId], (err, results) => {
         if (err) {
             console.error(err);
-            return res.status(500).send(err);
+            return res.status(500).json({ error: "Error fetching albums" });
         }
         res.json(results);
     });
@@ -42,7 +42,7 @@ router.get("/:id", authMiddleware, (req, res) => {
     db.query(sql, [id, req.userId], (err, results) => {
         if (err) {
             console.error(err);
-            return res.status(500).send(err);
+            return res.status(500).json({ error: "Error fetching album" });
         }
         if (!results[0]) {
             return res.status(404).json({ error: "Album not found" });
@@ -56,7 +56,6 @@ router.get("/:id", authMiddleware, (req, res) => {
 router.post("/", authMiddleware, upload.single("image"), (req, res) => {
     const { title, artist_id, year, spotify_id, image_url } = req.body;
 
-    // Support both uploaded images and Spotify image URLs
     const image_filename = req.file ? req.file.filename : null;
 
     const sql = `
@@ -75,23 +74,13 @@ router.post("/", authMiddleware, upload.single("image"), (req, res) => {
 
 // PUT /albums/:id
 // Updates an album — only if it belongs to the logged-in user
-router.put("/:id", authMiddleware, upload.single("image"), (req, res) => {
+router.put("/:id", authMiddleware, (req, res) => {
     const { id } = req.params;
     const { title, artist_id, year } = req.body;
 
-    let sql = "UPDATE albums SET title = ?, artist_id = ?, year = ?";
-    const queryParams = [title, artist_id, year];
+    const sql = "UPDATE albums SET title = ?, artist_id = ?, year = ? WHERE id = ? AND user_id = ? LIMIT 1";
 
-    if (req.file) {
-        sql += ", image_filename = ?";
-        queryParams.push(req.file.filename);
-    }
-
-    // Scope update to the logged-in user so they can't edit someone else's albums
-    sql += " WHERE id = ? AND user_id = ? LIMIT 1";
-    queryParams.push(id, req.userId);
-
-    db.query(sql, queryParams, (err, results) => {
+    db.query(sql, [title, artist_id, year, id, req.userId], (err) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ error: "Error updating album" });
@@ -107,10 +96,10 @@ router.delete("/:id", authMiddleware, (req, res) => {
 
     const sql = "DELETE FROM albums WHERE id = ? AND user_id = ? LIMIT 1";
 
-    db.query(sql, [id, req.userId], (err, results) => {
+    db.query(sql, [id, req.userId], (err) => {
         if (err) {
             console.error(err);
-            return res.status(500).send(err);
+            return res.status(500).json({ error: "Error deleting album" });
         }
         res.json({ message: "Album deleted successfully" });
     });

@@ -62,7 +62,7 @@ router.get("/callback", async (req, res) => {
 
         // Redirect to the frontend with the tokens in the URL
         // The frontend will grab these and store them
-        const frontendUrl = new URL("http://localhost:5173/spotify-callback");
+        const frontendUrl = new URL(`${process.env.CLIENT_URL}/spotify-callback`);
         frontendUrl.searchParams.set("access_token", data.access_token);
         frontendUrl.searchParams.set("refresh_token", data.refresh_token);
         frontendUrl.searchParams.set("expires_in", data.expires_in);

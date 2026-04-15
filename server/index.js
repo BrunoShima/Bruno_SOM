@@ -4,14 +4,17 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const albumsRoutes = require("./routes/albumsRoutes");
 const artistsRoutes = require("./routes/artistsRoutes");
 const usersRoutes = require("./routes/usersRoutes");
 const spotifyRoutes = require("./routes/spotifyRoutes");
 
-app.use(cors());
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+}));
 
 // Serve uploaded images as static files from the public folder
 app.use(express.static("public"));
