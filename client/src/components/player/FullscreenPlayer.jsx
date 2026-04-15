@@ -9,7 +9,10 @@ import { useImageColor } from "../../hooks/useImageColor";
 function FullscreenPlayer({ album, onClose, onPlay }) {
     const { currentTrack } = useSpotify();
     const [uiVisible, setUiVisible] = useState(true);
+    const [animationsEnabled, setAnimationsEnabled] = useState(true);
     const hideUiTimer = useRef(null);
+    const [showAnimText, setShowAnimText] = useState(false);
+    const animTextTimer = useRef(null);
 
     const artUrl = currentTrack?.album?.images?.[0]?.url || album.image_url;
     const vibrantColor = useImageColor(artUrl);
@@ -22,17 +25,32 @@ function FullscreenPlayer({ album, onClose, onPlay }) {
         }, 3000);
     };
 
+    // Enter native fullscreen on mount, exit on unmount
     useEffect(() => {
-        hideUiTimer.current = setTimeout(() => setUiVisible(false), 3000);
-        return () => clearTimeout(hideUiTimer.current);
+        document.documentElement.requestFullscreen?.().catch(() => {});
+        return () => {
+            if (document.fullscreenElement) {
+                document.exitFullscreen?.().catch(() => {});
+            }
+        };
     }, []);
 
     useEffect(() => {
-        const handleKey = (e) => {
-            if (e.key === "Escape") onClose();
+        hideUiTimer.current = setTimeout(() => setUiVisible(false), 3000);
+        return () => {
+            clearTimeout(hideUiTimer.current);
+            clearTimeout(animTextTimer.current);
         };
-        window.addEventListener("keydown", handleKey);
-        return () => window.removeEventListener("keydown", handleKey);
+    }, []);
+
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            if (!document.fullscreenElement) {
+                onClose();
+            }
+        };
+        document.addEventListener("fullscreenchange", handleFullscreenChange);
+        return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
     }, [onClose]);
 
     return (
@@ -52,7 +70,7 @@ function FullscreenPlayer({ album, onClose, onPlay }) {
                         filter: "blur(60px) brightness(0.35) saturate(1.4)",
                         transform: "scale(1.2)",
                         zIndex: 0,
-                        animation: "backdropDrift 20s ease-in-out infinite alternate",
+                        animation: animationsEnabled ? "backdropDrift 20s ease-in-out infinite alternate" : "none",
                     }}
                 />
             )}
@@ -78,7 +96,7 @@ function FullscreenPlayer({ album, onClose, onPlay }) {
                             background: `radial-gradient(circle, rgba(${vibrantColor},0.2) 0%, transparent 70%)`,
                             top: "-100px",
                             left: "-100px",
-                            animation: "orbFloat1 18s ease-in-out infinite alternate",
+                            animation: animationsEnabled ? "orbFloat1 18s ease-in-out infinite alternate" : "none",
                         }}
                     />
                     <div
@@ -90,7 +108,7 @@ function FullscreenPlayer({ album, onClose, onPlay }) {
                             background: `radial-gradient(circle, rgba(${vibrantColor},0.15) 0%, transparent 70%)`,
                             bottom: "-100px",
                             right: "-100px",
-                            animation: "orbFloat2 22s ease-in-out infinite alternate",
+                            animation: animationsEnabled ? "orbFloat2 22s ease-in-out infinite alternate" : "none",
                         }}
                     />
                     <div
@@ -102,19 +120,51 @@ function FullscreenPlayer({ album, onClose, onPlay }) {
                             background: `radial-gradient(circle, rgba(${vibrantColor},0.12) 0%, transparent 70%)`,
                             top: "40%",
                             right: "20%",
-                            animation: "orbFloat3 15s ease-in-out infinite alternate",
+                            animation: animationsEnabled ? "orbFloat3 15s ease-in-out infinite alternate" : "none",
                         }}
                     />
                 </div>
             )}
 
-            {/* Exit button — top right */}
+            {/* Top right controls */}
             <div
-                className="absolute top-6 right-8 z-20 transition-opacity duration-500"
+                className="absolute top-6 right-8 z-20 flex items-center gap-4 transition-opacity duration-500"
                 style={{ opacity: uiVisible ? 1 : 0, pointerEvents: uiVisible ? "auto" : "none" }}
             >
+                {/* Animations toggle */}
+                <div className="flex items-center gap-2">
+                    <span
+                        className="text-text-muted text-xs uppercase tracking-widest transition-opacity duration-300"
+                        style={{ opacity: showAnimText ? 1 : 0 }}
+                    >
+                        {animationsEnabled ? "Animations On" : "Animations Off"}
+                    </span>
+                    <button
+                        onClick={() => {
+                            setAnimationsEnabled((v) => !v);
+                            setShowAnimText(true);
+                            clearTimeout(animTextTimer.current);
+                            animTextTimer.current = setTimeout(() => setShowAnimText(false), 2000);
+                        }}
+                        className="text-text-muted hover:text-text-primary transition-colors"
+                        title="Toggle animations"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M12 3a9 9 0 0 1 6.36 15.36" />
+                            <path d="M12 21a9 9 0 0 1-6.36-15.36" />
+                        </svg>
+                    </button>
+                </div>
+
+                {/* Close */}
                 <button
-                    onClick={onClose}
+                    onClick={() => {
+                        if (document.fullscreenElement) {
+                            document.exitFullscreen?.().catch(() => {});
+                        }
+                        onClose();
+                    }}
                     className="text-text-muted hover:text-text-primary transition-colors text-xl font-bold"
                 >
                     ✕

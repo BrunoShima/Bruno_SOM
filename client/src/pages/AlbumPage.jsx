@@ -137,16 +137,22 @@ function AlbumPage() {
                             <div className="flex items-center gap-3 mt-4">
                                 <button
                                     onClick={() => navigate(`/albums/${prevAlbum.id}`)}
-                                    className="text-text-muted hover:text-text-primary transition-colors text-xs uppercase tracking-widest"
+                                    className="flex items-center gap-1.5 text-text-muted hover:text-text-primary transition-colors text-xs uppercase tracking-widest"
                                 >
-                                    ← Prev
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="15 18 9 12 15 6" />
+                                    </svg>
+                                    Prev
                                 </button>
                                 <span className="text-text-faint">·</span>
                                 <button
                                     onClick={() => navigate(`/albums/${nextAlbum.id}`)}
-                                    className="text-text-muted hover:text-text-primary transition-colors text-xs uppercase tracking-widest"
+                                    className="flex items-center gap-1.5 text-text-muted hover:text-text-primary transition-colors text-xs uppercase tracking-widest"
                                 >
-                                    Next →
+                                    Next
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <polyline points="9 18 15 12 9 6" />
+                                    </svg>
                                 </button>
                             </div>
                         )}
@@ -158,7 +164,8 @@ function AlbumPage() {
                         {/* Album art */}
                         <div
                             onClick={() => {
-                                if (album?.spotify_id) {
+                                const isCurrentlyPlaying = currentTrack?.album?.uri?.includes(album.spotify_id);
+                                if (album?.spotify_id && !isCurrentlyPlaying) {
                                     playAlbum(`spotify:album:${album.spotify_id}`);
                                 }
                                 setFullscreen(true);

@@ -21,6 +21,7 @@ export function SpotifyProvider({ children }) {
     const [currentTrack, setCurrentTrack] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const refreshTimerRef = useRef(null);
+    const playerRef = useRef(null);
 
     // Save tokens to localStorage whenever they change
     useEffect(() => {
@@ -40,12 +41,20 @@ export function SpotifyProvider({ children }) {
             const data = await res.json();
 
             if (data.access_token) {
-                setSpotifyToken(data.access_token);
+                // Update token in localStorage directly
                 localStorage.setItem("spotify_access_token", data.access_token);
 
                 // Update expiry time
                 const expiresAt = Date.now() + data.expires_in * 1000;
                 localStorage.setItem("spotify_expires_at", expiresAt.toString());
+
+                // Update the existing player's OAuth token instead of reinitializing
+                if (playerRef.current) {
+                    playerRef.current._options.getOAuthToken = (cb) => cb(data.access_token);
+                }
+
+                // Update state without triggering SDK reinitialization
+                setSpotifyToken(data.access_token);
 
                 console.log("Spotify token refreshed successfully");
             }
@@ -62,14 +71,11 @@ export function SpotifyProvider({ children }) {
         const now = Date.now();
         const timeUntilExpiry = expiresAt - now;
 
-        // Refresh 5 minutes before expiry
         const refreshIn = timeUntilExpiry - 5 * 60 * 1000;
 
         if (refreshIn <= 0) {
-            // Already expired or about to expire — refresh immediately
             refreshSpotifyToken();
         } else {
-            // Schedule refresh
             refreshTimerRef.current = setTimeout(() => {
                 refreshSpotifyToken();
             }, refreshIn);
@@ -80,9 +86,12 @@ export function SpotifyProvider({ children }) {
         };
     }, [spotifyToken, refreshSpotifyToken]);
 
-    // Initialize the Spotify Web Playback SDK once we have a token
+    // Initialize the Spotify Web Playback SDK — only once
     useEffect(() => {
         if (!spotifyToken) return;
+
+        // Don't reinitialize if player already exists
+        if (playerRef.current) return;
 
         fetch("https://api.spotify.com/v1/me", {
             headers: { Authorization: `Bearer ${spotifyToken}` },
@@ -92,15 +101,13 @@ export function SpotifyProvider({ children }) {
                 setIsPremium(data.product === "premium");
             });
 
-        const script = document.createElement("script");
-        script.src = "https://sdk.scdn.co/spotify-player.js";
-        script.async = true;
-        document.body.appendChild(script);
-
-        window.onSpotifyWebPlaybackSDKReady = () => {
+        const initPlayer = () => {
             const spotifyPlayer = new window.Spotify.Player({
                 name: "SOM Player",
-                getOAuthToken: (cb) => cb(spotifyToken),
+                getOAuthToken: (cb) => {
+                    // Always use the latest token from localStorage
+                    cb(localStorage.getItem("spotify_access_token") || spotifyToken);
+                },
                 volume: 0.8,
             });
 
@@ -116,12 +123,22 @@ export function SpotifyProvider({ children }) {
             });
 
             spotifyPlayer.connect();
+            playerRef.current = spotifyPlayer;
             setPlayer(spotifyPlayer);
         };
 
-        return () => {
-            document.body.removeChild(script);
-        };
+        // Only load script if not already loaded
+        if (!document.querySelector('script[src="https://sdk.scdn.co/spotify-player.js"]')) {
+            const script = document.createElement("script");
+            script.src = "https://sdk.scdn.co/spotify-player.js";
+            script.async = true;
+            document.body.appendChild(script);
+            window.onSpotifyWebPlaybackSDKReady = initPlayer;
+        } else if (window.Spotify) {
+            initPlayer();
+        } else {
+            window.onSpotifyWebPlaybackSDKReady = initPlayer;
+        }
     }, [spotifyToken]);
 
     const connectSpotify = () => {
@@ -142,13 +159,17 @@ export function SpotifyProvider({ children }) {
     };
 
     const togglePlayback = () => {
-        if (player) player.togglePlay();
+        if (playerRef.current) playerRef.current.togglePlay();
     };
 
     const disconnectSpotify = () => {
         localStorage.removeItem("spotify_access_token");
         localStorage.removeItem("spotify_refresh_token");
         localStorage.removeItem("spotify_expires_at");
+        if (playerRef.current) {
+            playerRef.current.disconnect();
+            playerRef.current = null;
+        }
         setSpotifyToken(null);
         setSpotifyRefreshToken(null);
         setPlayer(null);
