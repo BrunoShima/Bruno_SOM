@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import logo from "../assets/logo-white.svg";
 
 function SignupPage() {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -48,7 +50,21 @@ function SignupPage() {
                 return;
             }
 
-            navigate("/login");
+            // Auto sign in after signup
+            const signinRes = await fetch("http://localhost:3000/users/signin", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const signinData = await signinRes.json();
+
+            if (signinRes.ok) {
+                login(signinData.token);
+                navigate("/");
+            } else {
+                navigate("/login");
+            }
         } catch (err) {
             setError("Something went wrong. Try again.");
             setLoading(false);

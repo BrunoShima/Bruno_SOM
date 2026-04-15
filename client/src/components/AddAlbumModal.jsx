@@ -48,6 +48,14 @@ function AddAlbumModal({ onAlbumAdded, onClose }) {
         return () => clearTimeout(debounceTimer.current);
     }, [query, spotifyToken]);
 
+    useEffect(() => {
+        const handleKey = (e) => {
+            if (e.key === "Escape") onClose();
+        };
+        window.addEventListener("keydown", handleKey);
+        return () => window.removeEventListener("keydown", handleKey);
+    }, [onClose]);
+
     const handleSave = async (album) => {
         setSaving(true);
 
