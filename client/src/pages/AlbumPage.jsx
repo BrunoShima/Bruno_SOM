@@ -157,7 +157,12 @@ function AlbumPage() {
 
                         {/* Album art */}
                         <div
-                            onClick={() => setFullscreen(true)}
+                            onClick={() => {
+                                if (album?.spotify_id) {
+                                    playAlbum(`spotify:album:${album.spotify_id}`);
+                                }
+                                setFullscreen(true);
+                            }}
                             className="group relative"
                             style={{
                                 width: "58%",

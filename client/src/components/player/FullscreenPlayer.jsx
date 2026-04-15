@@ -4,11 +4,15 @@
 import { useState, useEffect, useRef } from "react";
 import Player from "./Player";
 import { useSpotify } from "../../context/SpotifyContext";
+import { useImageColor } from "../../hooks/useImageColor";
 
 function FullscreenPlayer({ album, onClose, onPlay }) {
     const { currentTrack } = useSpotify();
     const [uiVisible, setUiVisible] = useState(true);
     const hideUiTimer = useRef(null);
+
+    const artUrl = currentTrack?.album?.images?.[0]?.url || album.image_url;
+    const vibrantColor = useImageColor(artUrl);
 
     const handleMouseMove = () => {
         setUiVisible(true);
@@ -37,18 +41,21 @@ function FullscreenPlayer({ album, onClose, onPlay }) {
             onMouseMove={handleMouseMove}
             style={{ cursor: uiVisible ? "default" : "none" }}
         >
-            {/* Blurred backdrop */}
-            <div
-                className="absolute inset-0"
-                style={{
-                    backgroundImage: `url(${currentTrack?.album?.images?.[0]?.url || album.image_url})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    filter: "blur(60px) brightness(0.35) saturate(1.4)",
-                    transform: "scale(1.15)",
-                    zIndex: 0,
-                }}
-            />
+            {/* Blurred backdrop — slow drift animation */}
+            {artUrl && (
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        backgroundImage: `url(${artUrl})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        filter: "blur(60px) brightness(0.35) saturate(1.4)",
+                        transform: "scale(1.2)",
+                        zIndex: 0,
+                        animation: "backdropDrift 20s ease-in-out infinite alternate",
+                    }}
+                />
+            )}
 
             {/* Gradient mask */}
             <div
@@ -58,6 +65,48 @@ function FullscreenPlayer({ album, onClose, onPlay }) {
                     zIndex: 1,
                 }}
             />
+
+            {/* Floating orbs — only render if vibrantColor is available */}
+            {vibrantColor && (
+                <div className="absolute inset-0 overflow-hidden" style={{ zIndex: 2, pointerEvents: "none" }}>
+                    <div
+                        style={{
+                            position: "absolute",
+                            width: "600px",
+                            height: "600px",
+                            borderRadius: "50%",
+                            background: `radial-gradient(circle, rgba(${vibrantColor},0.2) 0%, transparent 70%)`,
+                            top: "-100px",
+                            left: "-100px",
+                            animation: "orbFloat1 18s ease-in-out infinite alternate",
+                        }}
+                    />
+                    <div
+                        style={{
+                            position: "absolute",
+                            width: "500px",
+                            height: "500px",
+                            borderRadius: "50%",
+                            background: `radial-gradient(circle, rgba(${vibrantColor},0.15) 0%, transparent 70%)`,
+                            bottom: "-100px",
+                            right: "-100px",
+                            animation: "orbFloat2 22s ease-in-out infinite alternate",
+                        }}
+                    />
+                    <div
+                        style={{
+                            position: "absolute",
+                            width: "400px",
+                            height: "400px",
+                            borderRadius: "50%",
+                            background: `radial-gradient(circle, rgba(${vibrantColor},0.12) 0%, transparent 70%)`,
+                            top: "40%",
+                            right: "20%",
+                            animation: "orbFloat3 15s ease-in-out infinite alternate",
+                        }}
+                    />
+                </div>
+            )}
 
             {/* Exit button — top right */}
             <div
@@ -73,11 +122,10 @@ function FullscreenPlayer({ album, onClose, onPlay }) {
             </div>
 
             {/* Centered album art + current track */}
-            <div 
+            <div
                 className="relative z-10 flex-1 flex flex-col items-center justify-center gap-6"
                 style={{ marginTop: "70px" }}
             >
-
                 {/* Album art */}
                 <div
                     style={{
@@ -86,9 +134,9 @@ function FullscreenPlayer({ album, onClose, onPlay }) {
                         boxShadow: "0 40px 80px rgba(0,0,0,0.8)",
                     }}
                 >
-                    {currentTrack?.album?.images?.[0]?.url || album.image_url ? (
+                    {artUrl ? (
                         <img
-                            src={currentTrack?.album?.images?.[0]?.url || album.image_url}
+                            src={artUrl}
                             alt={currentTrack?.name || album.title}
                             className="w-full h-full object-cover"
                         />
