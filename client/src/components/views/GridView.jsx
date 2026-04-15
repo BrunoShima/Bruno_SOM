@@ -45,20 +45,20 @@ function GridView({ albums, onAlbumDeleted }) {
             <div className="max-w-7xl mx-auto px-8 py-8 pt-20">
 
                 {/* Controls */}
-                <div className="flex items-center gap-4 mb-8">
+                <div className="flex flex-col gap-3 mb-8">
                     <input
                         type="text"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Filter by title or artist..."
-                        className="bg-surface border border-border text-text-primary px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-accent transition-all w-64"
+                        className="bg-surface border border-border text-text-primary px-4 py-2 rounded-lg text-sm focus:outline-none focus:border-accent transition-all w-full max-w-xs"
                     />
-                    <div className="flex items-center gap-1 bg-surface border border-border rounded-lg p-1 ml-auto">
+                    <div className="flex items-center gap-1 bg-surface border border-border rounded-lg p-1 self-start">
                         {SORT_OPTIONS.map((opt) => (
                             <button
                                 key={opt.value}
                                 onClick={() => setSort(opt.value)}
-                                className={`px-3 py-1.5 rounded-md text-xs uppercase tracking-widest font-bold transition-all font-ui font-medium ${
+                                className={`px-2 py-1 rounded-md text-[10px] sm:text-xs uppercase tracking-wider font-bold transition-all ${
                                     sort === opt.value
                                         ? "bg-accent text-black"
                                         : "text-text-muted hover:text-text-primary"
@@ -110,7 +110,7 @@ function GridView({ albums, onAlbumDeleted }) {
                                             e.stopPropagation();
                                             handleDelete(album.id);
                                         }}
-                                        className="absolute top-2 right-2 w-8 h-8 rounded-lg bg-black/70 text-text-muted hover:text-red-400 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                                        className="absolute top-2 right-2 w-8 h-8 rounded-lg bg-black/70 text-text-muted hover:text-red-400 flex items-center justify-center opacity-80 lg:opacity-0 lg:group-hover:opacity-100 transition-all"
                                     >
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                             <polyline points="3,6 5,6 21,6" />

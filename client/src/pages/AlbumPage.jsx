@@ -40,7 +40,6 @@ function AlbumPage() {
             });
     }, [id, spotifyToken]);
 
-    // Fetch full collection for prev/next navigation
     useEffect(() => {
         authFetch("http://localhost:3000/albums")
             .then((res) => res.json())
@@ -85,13 +84,13 @@ function AlbumPage() {
     }
 
     if (fullscreen) {
-        return(
+        return (
             <FullscreenPlayer
                 album={album}
                 onClose={() => setFullscreen(false)}
                 onPlay={() => album?.spotify_id && playAlbum(`spotify:album:${album.spotify_id}`)}
             />
-        )
+        );
     }
 
     return (
@@ -122,10 +121,10 @@ function AlbumPage() {
             />
 
             {/* Main layout */}
-            <div className="flex flex-1 overflow-hidden relative z-10">
+            <div className="flex flex-col md:flex-row flex-1 overflow-hidden relative z-10">
 
                 {/* Left — album art + info */}
-                <div className="w-1/2 flex flex-col overflow-hidden shrink-0">
+                <div className="w-full md:w-1/2 flex flex-col overflow-hidden shrink-0">
 
                     {/* Logo + nav */}
                     <div className="p-8 shrink-0">
@@ -159,7 +158,7 @@ function AlbumPage() {
                     </div>
 
                     {/* Art + info centered */}
-                    <div className="flex-1 flex flex-col items-center justify-center px-8 pb-8 gap-6">
+                    <div className="flex flex-col items-center justify-center px-8 pb-4 md:pb-8 gap-6 md:flex-1">
 
                         {/* Album art */}
                         <div
@@ -218,7 +217,7 @@ function AlbumPage() {
                 </div>
 
                 {/* Right — tracklist */}
-                <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="flex-1 flex flex-col overflow-hidden min-h-0">
 
                     {/* Header */}
                     <div className="px-10 pt-8 pb-4 shrink-0 border-b border-white/10">
@@ -273,7 +272,7 @@ function AlbumPage() {
             {/* Player */}
             <div className="relative z-10">
                 <Player
-                    onPlay={() => album?.spotify_id && playAlbum(`spotify:album:${album.spotify_id}`)} 
+                    onPlay={() => album?.spotify_id && playAlbum(`spotify:album:${album.spotify_id}`)}
                     onFullscreen={() => setFullscreen(true)}
                 />
             </div>

@@ -67,7 +67,7 @@ function CollectionPage() {
             </button>
 
             {/* Controls — top right, vertical stack */}
-            <div className="absolute top-6 right-8 z-20 flex flex-col items-center gap-3">
+            <div className="absolute top-6 right-8 z-20 flex flex-row sm:flex-col items-center gap-3">
 
                 {/* Profile */}
                 <div ref={profileRef} className="relative">
@@ -76,10 +76,10 @@ function CollectionPage() {
                             setShowProfileMenu((v) => !v);
                             setShowViewMenu(false);
                         }}
-                        className="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-accent transition-all"
+                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-accent transition-all"
                         title="Profile"
                     >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="14" height="14" className="sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <circle cx="12" cy="8" r="4" />
                             <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
                         </svg>
@@ -87,7 +87,7 @@ function CollectionPage() {
 
                     {/* Opens to the LEFT so it doesn't go behind view menu */}
                     {showProfileMenu && (
-                        <div className="absolute right-12 top-0 bg-surface border border-border rounded-xl overflow-hidden w-48 shadow-xl">
+                        <div className="absolute right-0 top-12 sm:right-12 sm:top-0 bg-surface border border-border rounded-xl overflow-hidden w-48 shadow-xl">
                             {spotifyToken ? (
                                 <button
                                     onClick={() => { disconnectSpotify(); setShowProfileMenu(false); }}
@@ -117,10 +117,10 @@ function CollectionPage() {
                 {/* Add Album */}
                 <button
                     onClick={() => setShowAddModal(true)}
-                    className="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-accent transition-all"
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-accent transition-all"
                     title="Add Album"
                 >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg width="14" height="14" className="sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="3" y="3" width="18" height="18" rx="2" />
                         <line x1="12" y1="8" x2="12" y2="16" />
                         <line x1="8" y1="12" x2="16" y2="12" />
@@ -134,10 +134,10 @@ function CollectionPage() {
                             setShowViewMenu((v) => !v);
                             setShowProfileMenu(false);
                         }}
-                        className="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-accent transition-all"
+                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-text-muted hover:text-text-primary hover:border-accent transition-all"
                         title="Switch View"
                     >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="14" height="14" className="sm:w-[18px] sm:h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <rect x="3" y="3" width="7" height="7" />
                             <rect x="14" y="3" width="7" height="7" />
                             <rect x="3" y="14" width="7" height="7" />
@@ -147,7 +147,7 @@ function CollectionPage() {
 
                     {/* Opens to the LEFT */}
                     {showViewMenu && (
-                        <div className="absolute right-12 top-0 bg-surface border border-border rounded-xl overflow-hidden w-40 shadow-xl">
+                        <div className="absolute right-0 top-12 sm:right-12 sm:top-0 bg-surface border border-border rounded-xl overflow-hidden w-40 shadow-xl">
                             {["carousel", "grid", "list"].map((v) => (
                                 <button
                                     key={v}
@@ -167,7 +167,7 @@ function CollectionPage() {
             </div>
 
             {/* Spotify status — bottom left */}
-            <div className="absolute bottom-8 left-8 z-20">
+            <div className="hidden sm:flex absolute bottom-8 left-8 z-20">
                 {spotifyToken ? (
                     <div className="flex items-center gap-2 bg-surface border border-border px-4 py-2.5 rounded-xl">
                         <div className="w-1.5 h-1.5 rounded-full bg-accent" />

@@ -9,7 +9,9 @@ function CarouselView({ albums }) {
     const [activeIndex, setActiveIndex] = useState(0);
     const [rotation, setRotation] = useState(0);
     const [isSpinning, setIsSpinning] = useState(false);
+    const [scale, setScale] = useState(1);
     const rotationRef = useRef(0);
+    const touchStartY = useRef(null);
 
     const minSlots = 10;
     const repeated = albums.length < minSlots
@@ -20,6 +22,18 @@ function CarouselView({ albums }) {
     const angleStep = 360 / count;
     const radius = count <= 10 ? 550 : Math.max(550, count * 58);
     const perspective = radius * 2.2;
+
+    // Responsive scale
+    useEffect(() => {
+        const updateScale = () => {
+            if (window.innerWidth < 640) setScale(0.55);
+            else if (window.innerWidth < 1024) setScale(0.75);
+            else setScale(1);
+        };
+        updateScale();
+        window.addEventListener("resize", updateScale);
+        return () => window.removeEventListener("resize", updateScale);
+    }, []);
 
     useEffect(() => {
         rotationRef.current = rotation;
@@ -79,6 +93,19 @@ function CarouselView({ albums }) {
         return () => window.removeEventListener("wheel", handleWheel);
     }, [prev, next]);
 
+    const handleTouchStart = (e) => {
+        touchStartY.current = e.touches[0].clientY;
+    };
+
+    const handleTouchEnd = (e) => {
+        if (touchStartY.current === null) return;
+        const diff = touchStartY.current - e.changedTouches[0].clientY;
+        if (Math.abs(diff) > 40) {
+            diff > 0 ? prev() : next();
+        }
+        touchStartY.current = null;
+    };
+
     const handleAlbumClick = () => {
         const nearestIndex = Math.round(rotationRef.current / angleStep);
         const currentIndex = ((nearestIndex % count) + count) % count;
@@ -95,8 +122,11 @@ function CarouselView({ albums }) {
     }
 
     return (
-        <div className="relative w-full h-full select-none flex items-center justify-center">
-
+        <div
+            className="relative w-full h-full select-none flex items-center justify-center"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+        >
             {/* Glow */}
             <div
                 style={{
@@ -120,6 +150,8 @@ function CarouselView({ albums }) {
                     perspective: `${perspective}px`,
                     position: "relative",
                     marginTop: "30px",
+                    transform: `scale(${scale})`,
+                    transformOrigin: "center center",
                 }}
             >
                 {/* Spinning cylinder */}

@@ -179,8 +179,8 @@ function FullscreenPlayer({ album, onClose, onPlay }) {
                 {/* Album art */}
                 <div
                     style={{
-                        width: "500px",
-                        height: "500px",
+                        width: "min(500px, 75vw)",
+                        height: "min(500px, 75vw)",
                         boxShadow: "0 40px 80px rgba(0,0,0,0.8)",
                     }}
                 >
@@ -198,7 +198,7 @@ function FullscreenPlayer({ album, onClose, onPlay }) {
                 </div>
 
                 {/* Current track info */}
-                <div className="text-center">
+                <div className="text-center px-8">
                     {currentTrack ? (
                         <>
                             <p className="text-text-primary text-lg font-display font-bold uppercase tracking-tight leading-none mb-1">

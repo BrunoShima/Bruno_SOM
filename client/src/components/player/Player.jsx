@@ -51,7 +51,7 @@ function Player({ onPlay, onFullscreen, hideTrackInfo }) {
             <div className="flex items-center justify-center gap-6 mb-4">
 
                 {/* Track info — left */}
-                <div className="flex-1 min-w-0 flex items-center gap-3">
+                <div className="flex-1 min-w-0 flex items-center gap-3 sm:visible invisible">
                     <div className="w-10 shrink-0" />
                     {!hideTrackInfo && (
                         <div className="min-w-0">
