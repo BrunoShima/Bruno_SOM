@@ -57,8 +57,8 @@ function Player({ onPlay, onFullscreen, hideTrackInfo }) {
                         <div className="min-w-0">
                             {currentTrack ? (
                                 <>
-                                    <p className="text-text-primary text-xs font-semibold truncate">{currentTrack.name}</p>
-                                    <p className="text-text-muted text-xs truncate">{currentTrack.artists?.[0]?.name}</p>
+                                    <p className="text-text-primary text-xs font-ui truncate">{currentTrack.name}</p>
+                                    <p className="text-text-muted text-xs font-ui truncate">{currentTrack.artists?.[0]?.name}</p>
                                 </>
                             ) : (
                                 <p className="text-text-muted text-xs uppercase tracking-widest">Not playing</p>

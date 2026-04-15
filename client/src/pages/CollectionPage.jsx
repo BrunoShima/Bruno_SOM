@@ -91,7 +91,7 @@ function CollectionPage() {
                             {spotifyToken ? (
                                 <button
                                     onClick={() => { disconnectSpotify(); setShowProfileMenu(false); }}
-                                    className="w-full text-left px-4 py-3 text-xs uppercase tracking-widest text-accent hover:bg-background transition-colors"
+                                    className="w-full text-left px-4 py-3 text-xs uppercase tracking-widest text-accent hover:bg-background transition-colors font-ui font-medium"
                                 >
                                     Spotify Connected ✓
                                 </button>
@@ -106,7 +106,7 @@ function CollectionPage() {
                             <div className="border-t border-border" />
                             <button
                                 onClick={handleLogout}
-                                className="w-full text-left px-4 py-3 text-xs uppercase tracking-widest text-text-muted hover:text-text-primary hover:bg-background transition-colors"
+                                className="w-full text-left px-4 py-3 text-xs uppercase tracking-widest text-text-muted hover:text-text-primary hover:bg-background transition-colors font-ui"
                             >
                                 Sign Out
                             </button>
@@ -152,7 +152,7 @@ function CollectionPage() {
                                 <button
                                     key={v}
                                     onClick={() => { setView(v); setShowViewMenu(false); }}
-                                    className={`w-full text-left px-4 py-3 text-xs uppercase tracking-widest transition-colors ${
+                                    className={`w-full text-left px-4 py-3 text-xs uppercase font-ui tracking-widest transition-colors ${
                                         view === v
                                             ? "text-accent bg-background"
                                             : "text-text-muted hover:text-text-primary hover:bg-background"
@@ -171,7 +171,7 @@ function CollectionPage() {
                 {spotifyToken ? (
                     <div className="flex items-center gap-2 bg-surface border border-border px-4 py-2.5 rounded-xl">
                         <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-                        <span className="text-xs uppercase tracking-widest text-text-muted font-bold">
+                        <span className="text-xs uppercase tracking-widest text-text-muted font-ui font-lig">
                             Spotify Connected
                         </span>
                     </div>

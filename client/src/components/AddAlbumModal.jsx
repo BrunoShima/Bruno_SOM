@@ -99,7 +99,7 @@ function AddAlbumModal({ onAlbumAdded, onClose }) {
             >
                 {/* Header */}
                 <div className="px-6 pt-6 pb-4 shrink-0">
-                    <h3 className="text-sm font-bold uppercase tracking-widest text-text-muted">
+                    <h3 className="text-sm uppercase tracking-widest text-text-muted font-ui font-medium">
                         Add Album
                     </h3>
                 </div>
@@ -113,7 +113,7 @@ function AddAlbumModal({ onAlbumAdded, onClose }) {
                             </p>
                             <button
                                 onClick={connectSpotify}
-                                className="bg-accent text-black font-bold uppercase tracking-widest text-xs px-6 py-3 rounded-lg hover:bg-accent-hover transition-colors"
+                                className="bg-accent text-black font-bold uppercase tracking-widest text-xs px-6 py-3 rounded-lg hover:bg-accent-hover transition-colors font-ui font-medium"
                             >
                                 Connect Spotify
                             </button>
@@ -138,7 +138,7 @@ function AddAlbumModal({ onAlbumAdded, onClose }) {
                 <div className="overflow-y-auto flex-1 border-t border-border">
                     {loading && (
                         <div className="flex items-center justify-center py-10">
-                            <p className="text-text-muted text-xs uppercase tracking-widest">Searching...</p>
+                            <p className="text-text-muted text-xs uppercase tracking-widest font-ui font-medium">Searching...</p>
                         </div>
                     )}
 

@@ -201,10 +201,10 @@ function FullscreenPlayer({ album, onClose, onPlay }) {
                 <div className="text-center">
                     {currentTrack ? (
                         <>
-                            <p className="text-text-primary text-lg font-black uppercase tracking-tight leading-none mb-1">
+                            <p className="text-text-primary text-lg font-display font-bold uppercase tracking-tight leading-none mb-1">
                                 {currentTrack.name}
                             </p>
-                            <p className="text-accent text-xs font-bold uppercase tracking-widest">
+                            <p className="text-accent text-xs font-display uppercase tracking-widest">
                                 {currentTrack.artists?.[0]?.name}
                             </p>
                         </>

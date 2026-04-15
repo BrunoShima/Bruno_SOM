@@ -77,10 +77,10 @@ function MiniPlayer() {
                     className={`flex-1 min-w-0 ${matchedAlbum ? "cursor-pointer" : ""}`}
                     onClick={handleNavigate}
                 >
-                    <p className={`text-xs font-semibold truncate transition-colors ${matchedAlbum ? "hover:text-accent" : "text-text-primary"}`}>
+                    <p className={`text-xs font-semibold truncate font-ui transition-colors ${matchedAlbum ? "hover:text-accent" : "text-text-primary"}`}>
                         {currentTrack.name}
                     </p>
-                    <p className="text-text-muted text-xs truncate">{currentTrack.artists?.[0]?.name}</p>
+                    <p className="text-text-muted text-xs font-ui truncate">{currentTrack.artists?.[0]?.name}</p>
                 </div>
 
                 {/* Controls */}

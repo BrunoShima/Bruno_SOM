@@ -58,7 +58,7 @@ function ListView({ albums, onAlbumDeleted }) {
                             <button
                                 key={opt.value}
                                 onClick={() => setSort(opt.value)}
-                                className={`px-3 py-1.5 rounded-md text-xs uppercase tracking-widest font-bold transition-all ${
+                                className={`px-3 py-1.5 rounded-md text-xs uppercase tracking-widest font-bold transition-all font-ui font-medium ${
                                     sort === opt.value
                                         ? "bg-accent text-black"
                                         : "text-text-muted hover:text-text-primary"
@@ -71,16 +71,16 @@ function ListView({ albums, onAlbumDeleted }) {
                 </div>
 
                 {/* Count */}
-                <p className="text-text-muted text-xs uppercase tracking-widest mb-4">
+                <p className="text-text-muted text-xs uppercase tracking-widest font-ui mb-4">
                     {sorted.length} {sorted.length === 1 ? "album" : "albums"}
                 </p>
 
                 {/* Header row */}
                 <div className="grid grid-cols-12 gap-4 px-4 pb-2 border-b border-border mb-1">
                     <div className="col-span-1" />
-                    <div className="col-span-5 text-xs uppercase tracking-widest text-text-muted font-bold">Title</div>
-                    <div className="col-span-4 text-xs uppercase tracking-widest text-text-muted font-bold">Artist</div>
-                    <div className="col-span-1 text-xs uppercase tracking-widest text-text-muted font-bold text-right">Year</div>
+                    <div className="col-span-5 text-xs uppercase tracking-widest text-text-muted font-ui">Title</div>
+                    <div className="col-span-4 text-xs uppercase tracking-widest text-text-muted font-ui">Artist</div>
+                    <div className="col-span-1 text-xs uppercase tracking-widest text-text-muted font-ui text-right">Year</div>
                     <div className="col-span-1" />
                 </div>
 
@@ -120,14 +120,14 @@ function ListView({ albums, onAlbumDeleted }) {
                                             <div className="w-full h-full bg-surface flex items-center justify-center text-text-muted text-xs">♪</div>
                                         )}
                                     </div>
-                                    <p className="text-text-primary text-sm font-semibold truncate group-hover:text-accent transition-colors">
+                                    <p className="text-text-primary text-sm font-semibold truncate group-hover:text-accent transition-colors font-display">
                                         {album.title}
                                     </p>
                                 </div>
 
                                 {/* Artist */}
                                 <div
-                                    className="col-span-4 text-text-muted text-sm truncate"
+                                    className="col-span-4 text-text-muted text-sm font-display truncate"
                                     onClick={() => navigate(`/albums/${album.id}`)}
                                 >
                                     {album.artist_name}
@@ -135,7 +135,7 @@ function ListView({ albums, onAlbumDeleted }) {
 
                                 {/* Year */}
                                 <div
-                                    className="col-span-1 text-text-muted text-sm text-right"
+                                    className="col-span-1 text-text-muted  font-display text-sm text-right"
                                     onClick={() => navigate(`/albums/${album.id}`)}
                                 >
                                     {album.year}

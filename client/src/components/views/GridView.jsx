@@ -58,7 +58,7 @@ function GridView({ albums, onAlbumDeleted }) {
                             <button
                                 key={opt.value}
                                 onClick={() => setSort(opt.value)}
-                                className={`px-3 py-1.5 rounded-md text-xs uppercase tracking-widest font-bold transition-all ${
+                                className={`px-3 py-1.5 rounded-md text-xs uppercase tracking-widest font-bold transition-all font-ui font-medium ${
                                     sort === opt.value
                                         ? "bg-accent text-black"
                                         : "text-text-muted hover:text-text-primary"
@@ -71,7 +71,7 @@ function GridView({ albums, onAlbumDeleted }) {
                 </div>
 
                 {/* Count */}
-                <p className="text-text-muted text-xs uppercase tracking-widest mb-6">
+                <p className="text-text-muted text-xs uppercase tracking-widest font-ui mb-6">
                     {sorted.length} {sorted.length === 1 ? "album" : "albums"}
                 </p>
 
@@ -123,13 +123,13 @@ function GridView({ albums, onAlbumDeleted }) {
 
                                 {/* Info */}
                                 <div onClick={() => navigate(`/albums/${album.id}`)}>
-                                    <p className="text-text-primary text-xs font-bold uppercase tracking-wide truncate group-hover:text-accent transition-colors">
+                                    <p className="text-text-primary text-xs font-bold uppercase tracking-wide truncate group-hover:text-accent transition-colors font-display font-bold">
                                         {album.title}
                                     </p>
-                                    <p className="text-text-muted text-xs truncate mt-0.5">
+                                    <p className="text-text-muted text-xs truncate font-display mt-0.5">
                                         {album.artist_name}
                                     </p>
-                                    <p className="text-text-faint text-xs mt-0.5">
+                                    <p className="text-text-faint text-xs font-display mt-0.5">
                                         {album.year}
                                     </p>
                                 </div>

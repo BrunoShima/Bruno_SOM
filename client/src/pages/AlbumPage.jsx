@@ -137,7 +137,7 @@ function AlbumPage() {
                             <div className="flex items-center gap-3 mt-4">
                                 <button
                                     onClick={() => navigate(`/albums/${prevAlbum.id}`)}
-                                    className="flex items-center gap-1.5 text-text-muted hover:text-text-primary transition-colors text-xs uppercase tracking-widest"
+                                    className="flex items-center gap-1.5 text-text-muted hover:text-text-primary font-ui transition-colors text-xs uppercase tracking-widest"
                                 >
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <polyline points="15 18 9 12 15 6" />
@@ -204,13 +204,13 @@ function AlbumPage() {
 
                         {/* Album info */}
                         <div className="text-center">
-                            <p className="text-text-muted text-xs uppercase tracking-widest mb-2">
+                            <p className="text-text-muted text-xs uppercase font-display tracking-widest mb-2">
                                 {album.year}
                             </p>
-                            <h1 className="text-3xl font-black uppercase tracking-tight text-text-primary leading-none mb-2">
+                            <h1 className="text-3xl font-black uppercase font-display tracking-tight text-text-primary leading-none mb-2">
                                 {album.title}
                             </h1>
-                            <p className="text-accent text-sm font-bold uppercase tracking-widest">
+                            <p className="text-accent text-sm font-display uppercase tracking-widest">
                                 {album.artist_name}
                             </p>
                         </div>
@@ -222,7 +222,7 @@ function AlbumPage() {
 
                     {/* Header */}
                     <div className="px-10 pt-8 pb-4 shrink-0 border-b border-white/10">
-                        <p className="text-text-muted text-xs uppercase tracking-widest">
+                        <p className="text-text-muted text-xs font-ui uppercase tracking-widest">
                             {tracks.length} {tracks.length === 1 ? "track" : "tracks"}
                         </p>
                     </div>
@@ -240,7 +240,7 @@ function AlbumPage() {
                                             className="flex items-center gap-4 px-10 py-4 border-b border-white/10 cursor-pointer group transition-colors"
                                         >
                                             <div className="w-5 h-5 shrink-0 relative">
-                                                <span className={`absolute inset-0 flex items-center justify-center text-xs group-hover:opacity-0 transition-opacity ${isActive ? "opacity-0" : "text-text-muted"}`}>
+                                                <span className={`absolute inset-0 flex items-center justify-center text-xs group-hover:opacity-0 transition-opacity ${isActive ? "opacity-0" : "text-text-muted font-ui"}`}>
                                                     {index + 1}
                                                 </span>
                                                 <span className={`absolute inset-0 flex items-center justify-center text-accent text-xs opacity-0 group-hover:opacity-100 transition-opacity ${isActive ? "opacity-100" : ""}`}>
@@ -252,7 +252,7 @@ function AlbumPage() {
                                             }`}>
                                                 {track.name}
                                             </p>
-                                            <span className="text-text-muted text-xs shrink-0">
+                                            <span className="text-text-muted font-ui text-xs shrink-0">
                                                 {formatDuration(track.duration_ms)}
                                             </span>
                                         </li>
