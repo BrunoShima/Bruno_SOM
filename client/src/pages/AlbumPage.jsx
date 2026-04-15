@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { useSpotify } from "../context/SpotifyContext";
 import logo from "../assets/logo-white.svg";
 import Player from "../components/player/Player";
+import FullscreenPlayer from "../components/player/FullScreenPlayer";
 
 function AlbumPage() {
     const { id } = useParams();
@@ -17,6 +18,7 @@ function AlbumPage() {
     const [albums, setAlbums] = useState([]);
     const [tracks, setTracks] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [fullscreen, setFullscreen] = useState(null);
 
     useEffect(() => {
         authFetch(`http://localhost:3000/albums/${id}`)
@@ -82,6 +84,16 @@ function AlbumPage() {
         );
     }
 
+    if (fullscreen) {
+        return(
+            <FullscreenPlayer
+                album={album}
+                onClose={() => setFullscreen(false)}
+                onPlay={() => album?.spotify_id && playAlbum(`spotify:album:${album.spotify_id}`)}
+            />
+        )
+    }
+
     return (
         <div className="h-screen flex flex-col overflow-hidden relative">
 
@@ -145,11 +157,14 @@ function AlbumPage() {
 
                         {/* Album art */}
                         <div
+                            onClick={() => setFullscreen(true)}
+                            className="group relative"
                             style={{
                                 width: "58%",
                                 aspectRatio: "1",
                                 flexShrink: 0,
                                 boxShadow: "0 40px 80px rgba(0,0,0,0.8)",
+                                cursor: "pointer",
                             }}
                         >
                             {album.image_url ? (
@@ -163,6 +178,16 @@ function AlbumPage() {
                                     ♪
                                 </div>
                             )}
+
+                            {/* Hover overlay */}
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="15,3 21,3 21,9" />
+                                    <polyline points="9,21 3,21 3,15" />
+                                    <line x1="21" y1="3" x2="14" y2="10" />
+                                    <line x1="3" y1="21" x2="10" y2="14" />
+                                </svg>
+                            </div>
                         </div>
 
                         {/* Album info */}
@@ -235,7 +260,10 @@ function AlbumPage() {
 
             {/* Player */}
             <div className="relative z-10">
-                <Player onPlay={() => album?.spotify_id && playAlbum(`spotify:album:${album.spotify_id}`)} />
+                <Player
+                    onPlay={() => album?.spotify_id && playAlbum(`spotify:album:${album.spotify_id}`)} 
+                    onFullscreen={() => setFullscreen(true)}
+                />
             </div>
         </div>
     );

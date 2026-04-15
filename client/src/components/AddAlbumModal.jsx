@@ -84,7 +84,6 @@ function AddAlbumModal({ onAlbumAdded, onClose }) {
             });
 
             onAlbumAdded();
-            onClose();
         } catch {
             setError("Failed to save album. Try again.");
         }

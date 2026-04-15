@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useSpotify } from "../../context/SpotifyContext";
 
-function Player({ onPlay }) {
+function Player({ onPlay, onFullscreen, hideTrackInfo }) {
     const { player, togglePlayback, isPlaying, currentTrack } = useSpotify();
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -53,16 +53,18 @@ function Player({ onPlay }) {
                 {/* Track info — left */}
                 <div className="flex-1 min-w-0 flex items-center gap-3">
                     <div className="w-10 shrink-0" />
-                    <div className="min-w-0">
-                        {currentTrack ? (
-                            <>
-                                <p className="text-text-primary text-xs font-semibold truncate">{currentTrack.name}</p>
-                                <p className="text-text-muted text-xs truncate">{currentTrack.artists?.[0]?.name}</p>
-                            </>
-                        ) : (
-                            <p className="text-text-muted text-xs uppercase tracking-widest">Not playing</p>
-                        )}
-                    </div>
+                    {!hideTrackInfo && (
+                        <div className="min-w-0">
+                            {currentTrack ? (
+                                <>
+                                    <p className="text-text-primary text-xs font-semibold truncate">{currentTrack.name}</p>
+                                    <p className="text-text-muted text-xs truncate">{currentTrack.artists?.[0]?.name}</p>
+                                </>
+                            ) : (
+                                <p className="text-text-muted text-xs uppercase tracking-widest">Not playing</p>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 {/* Prev */}
@@ -104,8 +106,23 @@ function Player({ onPlay }) {
                     </svg>
                 </button>
 
-                {/* Right spacer */}
-                <div className="flex-1" />
+                {/* Right side — fullscreen button */}
+                <div className="flex-1 flex justify-end items-center">
+                    {onFullscreen && (
+                        <button
+                            onClick={onFullscreen}
+                            className="text-text-muted hover:text-text-primary transition-colors"
+                            title="Fullscreen"
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="15,3 21,3 21,9" />
+                                <polyline points="9,21 3,21 3,15" />
+                                <line x1="21" y1="3" x2="14" y2="10" />
+                                <line x1="3" y1="21" x2="10" y2="14" />
+                            </svg>
+                        </button>
+                    )}
+                </div>
             </div>
 
             {/* Progress bar */}
