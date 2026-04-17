@@ -32,7 +32,7 @@ export function SpotifyProvider({ children }) {
 
         try {
             const res = await fetch(
-                `https://som-server-zwz3.onrender.com/spotify/refresh?refresh_token=${storedRefreshToken}`
+                `${import.meta.env.VITE_API_URL}/spotify/refresh?refresh_token=${storedRefreshToken}`
             );
             const data = await res.json();
 
@@ -128,7 +128,7 @@ export function SpotifyProvider({ children }) {
     }, [spotifyToken]);
 
     const connectSpotify = () => {
-        window.location.href = "https://som-server-zwz3.onrender.com/spotify/login";
+        window.location.href = `${import.meta.env.VITE_API_URL}/spotify/login`;
     };
 
     const playAlbum = async (spotifyUri) => {

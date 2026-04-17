@@ -18,7 +18,7 @@ function GridView({ albums, onAlbumDeleted }) {
     const [search, setSearch] = useState("");
 
     const handleDelete = async (id) => {
-        await authFetch(`https://som-server-zwz3.onrender.com/albums/${id}`, {
+        await authFetch(`${import.meta.env.VITE_API_URL}/albums/${id}`, {
             method: "DELETE",
         });
         onAlbumDeleted();

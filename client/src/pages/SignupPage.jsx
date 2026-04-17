@@ -36,7 +36,7 @@ function SignupPage() {
         setLoading(true);
 
         try {
-            const res = await fetch("https://som-server-zwz3.onrender.com/users", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
@@ -51,7 +51,7 @@ function SignupPage() {
             }
 
             // Auto sign in after signup
-            const signinRes = await fetch("https://som-server-zwz3.onrender.com/users/signin", {
+            const signinRes = await fetch(`${import.meta.env.VITE_API_URL}/users/signin`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
