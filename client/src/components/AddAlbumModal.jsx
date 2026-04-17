@@ -108,10 +108,11 @@ function AddAlbumModal({ onAlbumAdded, onClose }) {
     };
 
     return (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onWheel={(e) => e.stopPropagation()} onClick={onClose}>
             <div
                 className="bg-surface border border-border rounded-xl w-full max-w-lg relative flex flex-col"
                 style={{ maxHeight: "80vh" }}
+                onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
                 <div className="px-6 pt-6 pb-4 shrink-0">
