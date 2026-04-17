@@ -149,6 +149,18 @@ export function SpotifyProvider({ children }) {
         if (playerRef.current) playerRef.current.togglePlay();
     };
 
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.code !== "Space") return;
+            const tag = document.activeElement?.tagName;
+            if (tag === "INPUT" || tag === "TEXTAREA") return;
+            e.preventDefault();
+            if (playerRef.current) playerRef.current.togglePlay();
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
+
     const changeVolume = (val) => {
         setVolume(val);
         playerRef.current?.setVolume(val);
