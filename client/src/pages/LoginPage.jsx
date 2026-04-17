@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import logo from "../assets/logo-white.svg";
+import LoadingScreen from "../components/LoadingScreen";
 
 function LoginPage() {
     const { login } = useAuth();
@@ -40,6 +41,8 @@ function LoginPage() {
             setLoading(false);
         }
     };
+
+    if (loading) return <LoadingScreen />;
 
     return (
         <div className="min-h-screen bg-background flex items-center justify-center relative overflow-hidden">

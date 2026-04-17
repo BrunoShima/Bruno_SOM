@@ -9,6 +9,7 @@ import CarouselView from "../components/views/CarouselView";
 import GridView from "../components/views/GridView";
 import ListView from "../components/views/ListView";
 import AddAlbumModal from "../components/AddAlbumModal";
+import LoadingScreen from "../components/LoadingScreen";
 import logo from "../assets/logo-white.svg";
 
 function CollectionPage() {
@@ -55,6 +56,8 @@ function CollectionPage() {
         logout();
         navigate("/login");
     };
+
+    if (loading) return <LoadingScreen />;
 
     return (
         <div className="h-screen bg-background overflow-hidden relative">
@@ -190,17 +193,11 @@ function CollectionPage() {
 
             {/* Main content */}
             <main className="h-full">
-                {loading ? (
-                    <div className="flex items-center justify-center h-full">
-                        <p className="text-text-muted text-sm uppercase tracking-widest">Loading...</p>
-                    </div>
-                ) : (
-                    <>
-                        {view === "carousel" && <CarouselView albums={albums} />}
-                        {view === "grid" && <GridView albums={albums} onAlbumDeleted={getAlbums} />}
-                        {view === "list" && <ListView albums={albums} onAlbumDeleted={getAlbums} />}
-                    </>
-                )}
+                <>
+                    {view === "carousel" && <CarouselView albums={albums} />}
+                    {view === "grid" && <GridView albums={albums} onAlbumDeleted={getAlbums} />}
+                    {view === "list" && <ListView albums={albums} onAlbumDeleted={getAlbums} />}
+                </>
             </main>
 
             {/* Add Album Modal */}
