@@ -16,6 +16,7 @@ export function SpotifyProvider({ children }) {
     const [isPlayerReady, setIsPlayerReady] = useState(false);
     const [currentTrack, setCurrentTrack] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [volume, setVolume] = useState(0.8);
     const refreshTimerRef = useRef(null);
     const playerRef = useRef(null);
 
@@ -148,6 +149,11 @@ export function SpotifyProvider({ children }) {
         if (playerRef.current) playerRef.current.togglePlay();
     };
 
+    const changeVolume = (val) => {
+        setVolume(val);
+        playerRef.current?.setVolume(val);
+    };
+
     const disconnectSpotify = () => {
         localStorage.removeItem("spotify_access_token");
         localStorage.removeItem("spotify_refresh_token");
@@ -179,6 +185,8 @@ export function SpotifyProvider({ children }) {
                 playAlbum,
                 togglePlayback,
                 disconnectSpotify,
+                volume,
+                changeVolume,
             }}
         >
             {children}

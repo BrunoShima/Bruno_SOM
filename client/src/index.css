@@ -39,6 +39,50 @@ html, body {
     height: 100%;
 }
 
+.volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 2px;
+    border-radius: 2px;
+    outline: none;
+    background: transparent;
+    padding: 8px 0;
+    box-sizing: content-box;
+    cursor: pointer;
+}
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #76b900;
+    cursor: pointer;
+    margin-top: -4px;
+}
+.volume-slider::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #76b900;
+    cursor: pointer;
+    border: none;
+}
+.volume-slider::-webkit-slider-runnable-track {
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(to right, #76b900 var(--vol, 80%), rgba(255,255,255,0.1) var(--vol, 80%));
+}
+.volume-slider::-moz-range-track {
+    height: 2px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+}
+.volume-slider::-moz-range-progress {
+    height: 2px;
+    background: #76b900;
+    border-radius: 2px;
+}
+
 @keyframes backdropDrift {
     0% { transform: scale(1.2) translate(0px, 0px); }
     25% { transform: scale(1.35) translate(-80px, 60px); }

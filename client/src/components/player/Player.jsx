@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSpotify } from "../../context/SpotifyContext";
 
 function Player({ onPlay, onFullscreen, hideTrackInfo }) {
-    const { player, togglePlayback, isPlaying, currentTrack } = useSpotify();
+    const { player, togglePlayback, isPlaying, currentTrack, volume, changeVolume } = useSpotify();
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
     const progressInterval = useRef(null);
@@ -26,6 +26,10 @@ function Player({ onPlay, onFullscreen, hideTrackInfo }) {
 
     const handlePrev = () => player?.previousTrack();
     const handleNext = () => player?.nextTrack();
+
+    const handleVolumeChange = (e) => {
+        changeVolume(parseFloat(e.target.value));
+    };
 
     const handleSeek = (e) => {
         const rect = e.currentTarget.getBoundingClientRect();
@@ -106,8 +110,25 @@ function Player({ onPlay, onFullscreen, hideTrackInfo }) {
                     </svg>
                 </button>
 
-                {/* Right side — fullscreen button */}
-                <div className="flex-1 flex justify-end items-center">
+                {/* Right side — volume + fullscreen */}
+                <div className="flex-1 flex justify-end items-center gap-3">
+                    <div className="hidden sm:flex items-center gap-2">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-text-muted shrink-0">
+                            <polygon points="11,5 6,9 2,9 2,15 6,15 11,19" />
+                            <path d="M15.54,8.46a5,5,0,0,1,0,7.07" />
+                            <path d="M19.07,4.93a10,10,0,0,1,0,14.14" />
+                        </svg>
+                        <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            value={volume}
+                            onChange={handleVolumeChange}
+                            className="volume-slider w-20"
+                            style={{ '--vol': `${volume * 100}%` }}
+                        />
+                    </div>
                     {onFullscreen && (
                         <button
                             onClick={onFullscreen}
