@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { slugify } from "../../utils/slugify";
 
 function CarouselView({ albums }) {
     const navigate = useNavigate();
@@ -109,7 +110,7 @@ function CarouselView({ albums }) {
     const handleAlbumClick = () => {
         const nearestIndex = Math.round(rotationRef.current / angleStep);
         const currentIndex = ((nearestIndex % count) + count) % count;
-        navigate(`/albums/${repeated[currentIndex].id}`);
+        navigate(`/albums/${slugify(`${repeated[currentIndex].artist_name} ${repeated[currentIndex].title}`)}`);
     };
 
     if (!albums.length) {

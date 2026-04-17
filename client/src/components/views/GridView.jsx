@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { slugify } from "../../utils/slugify";
 
 const SORT_OPTIONS = [
     { label: "Recently Added", value: "recent" },
@@ -89,7 +90,7 @@ function GridView({ albums, onAlbumDeleted }) {
                             >
                                 {/* Cover */}
                                 <div
-                                    onClick={() => navigate(`/albums/${album.id}`)}
+                                    onClick={() => navigate(`/albums/${slugify(`${album.artist_name} ${album.title}`)}`)}
                                     className="aspect-square bg-surface overflow-hidden mb-3 relative"
                                 >
                                     {album.image_url ? (
@@ -122,7 +123,7 @@ function GridView({ albums, onAlbumDeleted }) {
                                 </div>
 
                                 {/* Info */}
-                                <div onClick={() => navigate(`/albums/${album.id}`)}>
+                                <div onClick={() => navigate(`/albums/${slugify(`${album.artist_name} ${album.title}`)}`)}>
                                     <p className="text-text-primary text-xs font-bold uppercase tracking-wide truncate group-hover:text-accent transition-colors font-display font-bold">
                                         {album.title}
                                     </p>

@@ -4,12 +4,13 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useSpotify } from "../context/SpotifyContext";
+import { slugify } from "../utils/slugify";
 import logo from "../assets/logo-white.svg";
 import Player from "../components/player/Player";
 import FullscreenPlayer from "../components/player/FullscreenPlayer";
 
 function AlbumPage() {
-    const { id } = useParams();
+    const { slug } = useParams();
     const navigate = useNavigate();
     const { authFetch } = useAuth();
     const { spotifyToken, playAlbum, currentTrack, isPlayerReady, deviceId } = useSpotify();
@@ -21,12 +22,14 @@ function AlbumPage() {
     const [fullscreen, setFullscreen] = useState(null);
 
     useEffect(() => {
-        authFetch(`${import.meta.env.VITE_API_URL}/albums/${id}`)
+        authFetch(`${import.meta.env.VITE_API_URL}/albums`)
             .then((res) => res.json())
             .then((data) => {
-                setAlbum(data);
-                if (data.spotify_id && spotifyToken) {
-                    fetch(`https://api.spotify.com/v1/albums/${data.spotify_id}/tracks?limit=50`, {
+                setAlbums(data);
+                const found = data.find((a) => slugify(`${a.artist_name} ${a.title}`) === slug);
+                setAlbum(found);
+                if (found?.spotify_id && spotifyToken) {
+                    fetch(`https://api.spotify.com/v1/albums/${found.spotify_id}/tracks?limit=50`, {
                         headers: { Authorization: `Bearer ${spotifyToken}` },
                     })
                         .then((res) => res.json())
@@ -38,13 +41,7 @@ function AlbumPage() {
                     setLoading(false);
                 }
             });
-    }, [id, spotifyToken]);
-
-    useEffect(() => {
-        authFetch(`${import.meta.env.VITE_API_URL}/albums`)
-            .then((res) => res.json())
-            .then((data) => setAlbums(data));
-    }, []);
+    }, [slug, spotifyToken]);
 
     const currentIdx = albums.findIndex((a) => a.id === album?.id);
     const prevAlbum = currentIdx > 0 ? albums[currentIdx - 1] : albums[albums.length - 1];
@@ -135,7 +132,7 @@ function AlbumPage() {
                         {albums.length > 1 && (
                             <div className="flex items-center gap-3 mt-4">
                                 <button
-                                    onClick={() => navigate(`/albums/${prevAlbum.id}`)}
+                                    onClick={() => navigate(`/albums/${slugify(`${prevAlbum.artist_name} ${prevAlbum.title}`)}`)}
                                     className="flex items-center gap-1.5 text-text-muted hover:text-text-primary font-ui transition-colors text-xs uppercase tracking-widest"
                                 >
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -145,7 +142,7 @@ function AlbumPage() {
                                 </button>
                                 <span className="text-text-faint">·</span>
                                 <button
-                                    onClick={() => navigate(`/albums/${nextAlbum.id}`)}
+                                    onClick={() => navigate(`/albums/${slugify(`${nextAlbum.artist_name} ${nextAlbum.title}`)}`)}
                                     className="flex items-center gap-1.5 text-text-muted hover:text-text-primary transition-colors text-xs uppercase tracking-widest"
                                 >
                                     Next

@@ -33,7 +33,7 @@ function App() {
                     }
                 />
                 <Route
-                    path="/albums/:id"
+                    path="/albums/:slug"
                     element={
                         <ProtectedRoute>
                             <AlbumPage />

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSpotify } from "../../context/SpotifyContext";
 import { useAuth } from "../../context/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import { slugify } from "../../utils/slugify";
 
 function MiniPlayer() {
     const { currentTrack, isPlaying, togglePlayback, player } = useSpotify();
@@ -32,7 +33,7 @@ function MiniPlayer() {
     if (!currentTrack) return null;
 
     const handleNavigate = () => {
-        if (matchedAlbum) navigate(`/albums/${matchedAlbum.id}`);
+        if (matchedAlbum) navigate(`/albums/${slugify(`${matchedAlbum.artist_name} ${matchedAlbum.title}`)}`);
     };
 
     const handlePrev = () => player?.previousTrack();

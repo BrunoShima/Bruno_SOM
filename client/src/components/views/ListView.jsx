@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { slugify } from "../../utils/slugify";
 
 const SORT_OPTIONS = [
     { label: "Recently Added", value: "recent" },
@@ -107,7 +108,7 @@ function ListView({ albums, onAlbumDeleted }) {
                                 {/* Title + thumbnail */}
                                 <div
                                     className="col-span-5 flex items-center gap-3 min-w-0"
-                                    onClick={() => navigate(`/albums/${album.id}`)}
+                                    onClick={() => navigate(`/albums/${slugify(`${album.artist_name} ${album.title}`)}`)}
                                 >
                                     <div className="w-9 h-9 shrink-0 overflow-hidden">
                                         {album.image_url ? (
@@ -128,7 +129,7 @@ function ListView({ albums, onAlbumDeleted }) {
                                 {/* Artist */}
                                 <div
                                     className="col-span-4 text-text-muted text-sm font-display truncate"
-                                    onClick={() => navigate(`/albums/${album.id}`)}
+                                    onClick={() => navigate(`/albums/${slugify(`${album.artist_name} ${album.title}`)}`)}
                                 >
                                     {album.artist_name}
                                 </div>
@@ -136,7 +137,7 @@ function ListView({ albums, onAlbumDeleted }) {
                                 {/* Year */}
                                 <div
                                     className="col-span-1 text-text-muted  font-display text-sm text-right"
-                                    onClick={() => navigate(`/albums/${album.id}`)}
+                                    onClick={() => navigate(`/albums/${slugify(`${album.artist_name} ${album.title}`)}`)}
                                 >
                                     {album.year}
                                 </div>
