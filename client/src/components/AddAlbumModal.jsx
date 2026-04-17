@@ -12,7 +12,14 @@ function AddAlbumModal({ onAlbumAdded, onClose }) {
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
+    const [collection, setCollection] = useState([]);
     const debounceTimer = useRef(null);
+
+    useEffect(() => {
+        authFetch(`${import.meta.env.VITE_API_URL}/albums`)
+            .then((res) => res.json())
+            .then((data) => setCollection(data));
+    }, []);
 
     // Live search — fires 400ms after the user stops typing
     useEffect(() => {
@@ -91,6 +98,7 @@ function AddAlbumModal({ onAlbumAdded, onClose }) {
                 }),
             });
 
+            setCollection((prev) => [...prev, album]);
             onAlbumAdded();
         } catch {
             setError("Failed to save album. Try again.");
@@ -152,7 +160,9 @@ function AddAlbumModal({ onAlbumAdded, onClose }) {
 
                     {!loading && results.length > 0 && (
                         <ul>
-                            {results.map((album) => (
+                            {results.map((album) => {
+                                const owned = collection.some((c) => c.spotify_id === album.spotify_id);
+                                return (
                                 <li
                                     key={album.spotify_id}
                                     className="flex items-center gap-4 px-6 py-3 border-b border-border hover:bg-background transition-colors"
@@ -181,15 +191,22 @@ function AddAlbumModal({ onAlbumAdded, onClose }) {
                                     </div>
 
                                     {/* Add button */}
-                                    <button
-                                        onClick={() => handleSave(album)}
-                                        disabled={saving}
-                                        className="shrink-0 text-xs uppercase tracking-widest font-bold text-accent hover:text-black hover:bg-accent border border-accent px-3 py-1.5 rounded-lg transition-all disabled:opacity-50"
-                                    >
-                                        + Add
-                                    </button>
+                                    {owned ? (
+                                        <span className="shrink-0 text-xs uppercase tracking-widest font-bold text-text-faint border border-text-faint px-3 py-1.5 rounded-lg">
+                                            In Collection
+                                        </span>
+                                    ) : (
+                                        <button
+                                            onClick={() => handleSave(album)}
+                                            disabled={saving}
+                                            className="shrink-0 text-xs uppercase tracking-widest font-bold text-accent hover:text-black hover:bg-accent border border-accent px-3 py-1.5 rounded-lg transition-all disabled:opacity-50"
+                                        >
+                                            + Add
+                                        </button>
+                                    )}
                                 </li>
-                            ))}
+                                );
+                            })}
                         </ul>
                     )}
 
